@@ -1,0 +1,181 @@
+<section class="contact section-enter">
+  <div class="contact__container">
+    <div class="contact__info">
+      <p class="contact__eyebrow">
+        Contact
+      </p>
+
+      <h2 class="contact__title">
+        Get In Touch
+      </h2>
+
+      <p class="contact__description">
+        Nếu bạn muốn trao đổi về dự án, công nghệ hoặc cơ hội hợp tác,
+        bạn có thể liên hệ với tôi tại đây.
+      </p>
+
+      <div class="contact__socials">
+        <a
+          class="contact__social-link"
+          [href]="githubUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+
+        @if (linkedinUrl) {
+          <a
+            class="contact__social-link"
+            [href]="linkedinUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn
+          </a>
+        } @else {
+          <span class="contact__social-link contact__social-link--disabled">
+            LinkedIn
+          </span>
+        }
+
+        @if (email) {
+          <a
+            class="contact__social-link"
+            [href]="'mailto:' + email"
+          >
+            Email
+          </a>
+        } @else {
+          <span class="contact__social-link contact__social-link--disabled">
+            Email
+          </span>
+        }
+      </div>
+    </div>
+
+    <form
+      class="contact__form"
+      [formGroup]="contactForm"
+    >
+      <div class="contact__field">
+        <label
+          class="contact__label"
+          for="contact-name"
+        >
+          Name
+        </label>
+
+        <input
+          id="contact-name"
+          class="contact__input"
+          type="text"
+          formControlName="name"
+          autocomplete="name"
+          placeholder="Tên của bạn"
+        />
+
+        @if (
+          contactForm.controls.name.touched &&
+          contactForm.controls.name.hasError('required')
+        ) {
+          <p class="contact__error">
+            Vui lòng nhập tên.
+          </p>
+        }
+
+        @if (
+          contactForm.controls.name.touched &&
+          contactForm.controls.name.hasError('minlength')
+        ) {
+          <p class="contact__error">
+            Tên phải có ít nhất 2 ký tự.
+          </p>
+        }
+      </div>
+
+      <div class="contact__field">
+        <label
+          class="contact__label"
+          for="contact-email"
+        >
+          Email
+        </label>
+
+        <input
+          id="contact-email"
+          class="contact__input"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+        />
+
+        @if (
+          contactForm.controls.email.touched &&
+          contactForm.controls.email.hasError('required')
+        ) {
+          <p class="contact__error">
+            Vui lòng nhập email.
+          </p>
+        }
+
+        @if (
+          contactForm.controls.email.touched &&
+          contactForm.controls.email.hasError('email')
+        ) {
+          <p class="contact__error">
+            Email không hợp lệ.
+          </p>
+        }
+      </div>
+
+      <div class="contact__field">
+        <label
+          class="contact__label"
+          for="contact-message"
+        >
+          Message
+        </label>
+
+        <textarea
+          id="contact-message"
+          class="contact__textarea"
+          formControlName="message"
+          rows="6"
+          placeholder="Nội dung bạn muốn trao đổi..."
+        ></textarea>
+
+        @if (
+          contactForm.controls.message.touched &&
+          contactForm.controls.message.hasError('required')
+        ) {
+          <p class="contact__error">
+            Vui lòng nhập nội dung.
+          </p>
+        }
+
+        @if (
+          contactForm.controls.message.touched &&
+          contactForm.controls.message.hasError('minlength')
+        ) {
+          <p class="contact__error">
+            Nội dung phải có ít nhất 10 ký tự.
+          </p>
+        }
+      </div>
+
+      <button
+        class="contact__submit"
+        type="button"
+        disabled
+      >
+        Send Message
+      </button>
+
+      <p class="contact__note">
+        Chức năng gửi tin nhắn sẽ được kết nối sau khi Contact API hoàn thành.
+      </p>
+    </form>
+  </div>
+</section>

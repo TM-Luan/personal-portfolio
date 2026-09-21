@@ -1,0 +1,30 @@
+<header class="navbar">
+  <div class="navbar__container">
+    <a class="navbar__brand" routerLink="/">
+      Luan Tran
+    </a>
+
+    <nav class="navbar__nav" aria-label="Main navigation">
+      <a
+        routerLink="/"
+        routerLinkActive="navbar__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="navbar__link"
+      >
+        Home
+      </a>
+
+      <span class="navbar__link navbar__link--disabled">
+        Projects
+      </span>
+
+      <span class="navbar__link navbar__link--disabled">
+        Blog
+      </span>
+
+      <span class="navbar__link navbar__link--disabled">
+        Contact
+      </span>
+    </nav>
+  </div>
+</header>

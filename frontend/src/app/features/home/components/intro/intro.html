@@ -1,0 +1,65 @@
+<section class="intro section-enter">
+  <div class="intro__container">
+    <div class="intro__avatar-wrapper">
+      <img
+        class="intro__avatar"
+        src="/images/avatar.jpg"
+        alt="Ảnh đại diện của Trần Minh Luân"
+      />
+    </div>
+
+    <div class="intro__content">
+      <p class="intro__eyebrow">
+        Hello, I'm
+      </p>
+
+      <h1 class="intro__name">
+        {{ name }}
+      </h1>
+
+      <p class="intro__title">
+        {{ title }}
+      </p>
+
+      <p class="intro__description">
+        {{ description }}
+      </p>
+
+      <div class="intro__socials">
+        @if (githubUrl) {
+          <a
+            class="intro__social-link"
+            [href]="githubUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+        } @else {
+          <span class="intro__social-link intro__social-link--disabled">
+            GitHub
+          </span>
+        }
+
+        <span class="intro__separator">
+          /
+        </span>
+
+        @if (linkedinUrl) {
+          <a
+            class="intro__social-link"
+            [href]="linkedinUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn
+          </a>
+        } @else {
+          <span class="intro__social-link intro__social-link--disabled">
+            LinkedIn
+          </span>
+        }
+      </div>
+    </div>
+  </div>
+</section>

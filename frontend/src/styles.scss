@@ -1,0 +1,126 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  color-scheme: light dark;
+
+  // Background
+  --color-background: #f7f9f8;
+  --color-surface: #ffffff;
+
+  // Text
+  --color-text-primary: #18201c;
+  --color-text-secondary: #65716a;
+
+  // Border
+  --color-border: #dfe6e2;
+
+  // Accent
+  --color-accent: #16a34a;
+  --color-accent-hover: #15803d;
+
+  // Font
+  --font-family-base:
+    "Cascadia Code",
+    "JetBrains Mono",
+    "Fira Code",
+    "Segoe UI",
+    monospace;
+
+  // Layout
+  --page-max-width: 1200px;
+  --page-padding: 24px;
+
+  // UI
+  --border-radius: 12px;
+  --transition-speed: 180ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #0d1110;
+    --color-surface: #151b18;
+
+    --color-text-primary: #e7eee9;
+    --color-text-secondary: #96a29b;
+
+    --color-border: #28322d;
+
+    --color-accent: #22c55e;
+    --color-accent-hover: #4ade80;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  font-family: var(--font-family-base);
+
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+
+  line-height: 1.6;
+
+  transition:
+    background-color var(--transition-speed) ease,
+    color var(--transition-speed) ease;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+
+  transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+img,
+picture {
+  display: block;
+  max-width: 100%;
+}
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-enter {
+  animation: fade-in-up 500ms ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

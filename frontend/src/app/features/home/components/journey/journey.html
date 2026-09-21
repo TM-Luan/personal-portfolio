@@ -1,0 +1,49 @@
+<section class="journey section-enter">
+  <div class="journey__container">
+    <div class="journey__heading">
+      <p class="journey__eyebrow">
+        My Journey
+      </p>
+
+      <h2 class="journey__title">
+        Journey
+      </h2>
+
+      <p class="journey__intro">
+        Quá trình học tập, phát triển kỹ năng và xây dựng các dự án cá nhân của tôi.
+      </p>
+    </div>
+
+    <div class="journey__timeline">
+      @for (item of journeyItems; track item.title) {
+        <article class="journey__item">
+          <div class="journey__period">
+            {{ item.period }}
+          </div>
+
+          <div class="journey__marker" aria-hidden="true">
+            <span class="journey__dot"></span>
+          </div>
+
+          <div class="journey__content">
+            <p class="journey__type">
+              {{ item.type }}
+            </p>
+
+            <h3 class="journey__item-title">
+              {{ item.title }}
+            </h3>
+
+            <p class="journey__subtitle">
+              {{ item.subtitle }}
+            </p>
+
+            <p class="journey__description">
+              {{ item.description }}
+            </p>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

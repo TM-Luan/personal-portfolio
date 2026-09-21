@@ -1,0 +1,44 @@
+<section class="tech-stack section-enter">
+  <div class="tech-stack__container">
+    <div class="tech-stack__heading">
+      <p class="tech-stack__eyebrow">
+        Technologies
+      </p>
+
+      <h2 class="tech-stack__title">
+        Tech Stack
+      </h2>
+
+      <p class="tech-stack__intro">
+        Những công nghệ và công cụ tôi đang sử dụng trong quá trình học tập
+        và xây dựng ứng dụng.
+      </p>
+    </div>
+
+    <div class="tech-stack__groups">
+      @for (group of techGroups; track group.name) {
+        <div class="tech-stack__group">
+          <h3 class="tech-stack__group-title">
+            {{ group.name }}
+          </h3>
+
+          <div class="tech-stack__grid">
+            @for (technology of group.technologies; track technology.name) {
+              <div class="tech-stack__item">
+                <img
+                  class="tech-stack__icon"
+                  [src]="technology.icon"
+                  [alt]="technology.name + ' logo'"
+                />
+
+                <span class="tech-stack__name">
+                  {{ technology.name }}
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,31 @@
+<section class="featured-projects section-enter">
+  <div class="featured-projects__container">
+    <div class="featured-projects__heading">
+      <p class="featured-projects__eyebrow">
+        Selected Work
+      </p>
+
+      <h2 class="featured-projects__title">
+        Featured Projects
+      </h2>
+
+      <p class="featured-projects__intro">
+        Một số dự án tôi đang xây dựng và sử dụng để thực hành phát triển
+        phần mềm trong môi trường thực tế.
+      </p>
+    </div>
+
+    <div class="featured-projects__grid">
+      @for (project of projects; track project.title) {
+        <app-project-card
+          [title]="project.title"
+          [description]="project.description"
+          [image]="project.image"
+          [technologies]="project.technologies"
+          [githubUrl]="project.githubUrl"
+          [demoUrl]="project.demoUrl"
+        />
+      }
+    </div>
+  </div>
+</section>

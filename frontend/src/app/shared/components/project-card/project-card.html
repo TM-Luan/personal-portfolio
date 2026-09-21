@@ -1,0 +1,67 @@
+<article class="project-card">
+  <div class="project-card__media">
+    @if (image()) {
+      <img
+        class="project-card__image"
+        [src]="image()"
+        [alt]="title() + ' screenshot'"
+      />
+    } @else {
+      <div class="project-card__placeholder">
+        <span>
+          {{ title() }}
+        </span>
+      </div>
+    }
+  </div>
+
+  <div class="project-card__body">
+    <h3 class="project-card__title">
+      {{ title() }}
+    </h3>
+
+    <p class="project-card__description">
+      {{ description() }}
+    </p>
+
+    <div class="project-card__technologies">
+      @for (technology of technologies(); track technology) {
+        <span class="project-card__technology">
+          {{ technology }}
+        </span>
+      }
+    </div>
+
+    <div class="project-card__actions">
+      @if (githubUrl()) {
+        <a
+          class="project-card__link"
+          [href]="githubUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+      } @else {
+        <span class="project-card__link project-card__link--disabled">
+          GitHub
+        </span>
+      }
+
+      @if (demoUrl()) {
+        <a
+          class="project-card__link"
+          [href]="demoUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Live Demo
+        </a>
+      } @else {
+        <span class="project-card__link project-card__link--disabled">
+          Live Demo
+        </span>
+      }
+    </div>
+  </div>
+</article>

@@ -1,14 +1,34 @@
-# Build output
-**/bin/
-**/obj/
+# .NET build and tooling output
+[Bb]in/
+[Oo]bj/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Angular / Node.js output and local caches
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Secrets and local IDE settings
+# Secrets: keep appsettings.json and appsettings.Development.json versioned;
+# ignore only local/secret variants.
 appsettings.Local.json
 appsettings.*.local.json
 .env
 .env.*
+!.env.example
+
+# IDE and operating-system files
 .vs/
 .idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.DS_Store
+Thumbs.db

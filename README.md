@@ -56,7 +56,9 @@ Program.cs → ApplicationDbContext → MySQL
           ContactRepository
 ```
 
-Backend hiện chỉ có entity, EF mapping và repository của Contact. Không có controller, DTO, service hoặc endpoint Contact trong source hiện tại. Vì vậy form liên hệ chỉ kiểm tra dữ liệu ở trình duyệt; nút gửi đang bị vô hiệu hóa và chưa lưu dữ liệu.
+Contact đã chạy xuyên suốt từ form Angular tới API: form gọi endpoint `POST /api/contact-messages`, API kiểm tra request, service tạo message và repository lưu qua EF Core. Backend vẫn cần một MySQL được cấu hình và migration được áp dụng trước khi có thể lưu dữ liệu thật.
+
+Frontend gọi bằng đường dẫn tương đối `/api/contact-messages`. Khi phát triển, `frontend/proxy.conf.json` chuyển tiếp `/api` đến `http://localhost:5243`; khi production, web server/reverse proxy cần chuyển tiếp cùng đường dẫn này tới backend.
 
 ## Phần đã làm
 
@@ -70,8 +72,8 @@ Backend hiện chỉ có entity, EF mapping và repository của Contact. Không
 | Journey | Hoàn thành giao diện | Timeline dùng dữ liệu tĩnh về học tập/dự án. |
 | Tech Stack | Hoàn thành giao diện | Hiển thị Frontend, Backend, Database, Tools cùng icon trong `public`. |
 | Featured Projects | Hoàn thành khung | Có `ProjectCard` tái sử dụng và một dự án mẫu; ảnh, GitHub URL, demo URL đang trống. |
-| Contact form | Hoàn thành một phần | Reactive Forms: tên bắt buộc, tối thiểu 2 ký tự; email hợp lệ; message bắt buộc, tối thiểu 10 ký tự. |
-| Navbar | Hoàn thành một phần | Brand/Home hoạt động. Projects, Blog, Contact đang disabled; chưa scroll/chuyển trang. |
+| Contact form | Hoàn thành | Reactive Forms validation đúng giới hạn API, submit HTTP, trạng thái đang gửi/thành công/lỗi và reset form sau khi gửi thành công. |
+| Navbar | Hoàn thành cơ bản | Brand/Home hoạt động; Projects, Journey và Contact cuộn tới section tương ứng. Blog chưa triển khai. |
 | Kiểm thử | Khung có sẵn | Có file `*.spec.ts` mặc định, chưa thấy test nghiệp vụ/UI đáng kể. |
 
 ### Backend
@@ -84,8 +86,8 @@ Backend hiện chỉ có entity, EF mapping và repository của Contact. Không
 | Trạng thái Contact | Hoàn thành | `Unread`, `Read`, `Archived`. |
 | EF mapping | Hoàn thành | Bảng `contact_messages`, ràng buộc độ dài/kiểu cột, index `(Status, CreatedAt)`. |
 | Repository | Hoàn thành cơ bản | `AddAsync` và `SaveChangesAsync`, có `CancellationToken`. |
-| Migration | Chưa có | Chưa có thư mục/file EF Core migrations. |
-| Contact API | Chưa có | Chưa có controller, DTO, validation server-side, service hoặc `POST` endpoint. |
+| Migration | Đã tạo, chưa áp dụng | Migration `InitialCreate` tạo bảng `contact_messages`; cần chạy `database update` trên MySQL đã cấu hình. |
+| Contact API | Hoàn thành | `POST /api/contact-messages` dùng DTO, validation server-side, service, repository, Problem Details khi lỗi và trả `201 Created`. Endpoint giới hạn 5 request/phút. |
 | API nội dung portfolio | Chưa có | Chưa có API cho Profile, Skills, Journey, Projects, Blog. |
 | Authentication/authorization | Chưa có | Chưa cấu hình auth scheme; `UseAuthorization()` hiện chưa bảo vệ endpoint nào. |
 | Tài liệu API | Chưa có | Chưa thấy Swagger/OpenAPI. |
@@ -106,16 +108,12 @@ Nên dùng DTO riêng cho request/response, không trả trực tiếp entity da
 
 ## Việc cần làm để hoàn thiện
 
-### Ưu tiên 1 — Contact hoạt động end-to-end
+### Ưu tiên 1 — Đưa Contact vào môi trường thật
 
-1. Tạo request/response DTO và validation server-side cho tên, email, nội dung.
-2. Tạo `ContactService` chứa nghiệp vụ tạo message; controller chỉ xử lý HTTP.
-3. Tạo `ContactMessagesController` với `POST /api/contact-messages`.
-4. Cấu hình connection string bằng User Secrets/biến môi trường, không commit mật khẩu.
-5. Tạo/apply EF Core migration cho `contact_messages`.
-6. Thêm CORS đúng origin của frontend.
-7. Thêm `provideHttpClient()`, Angular API service, `(ngSubmit)`, trạng thái loading/success/error và disable submit khi đang gửi hoặc form lỗi.
-8. Test các trường hợp hợp lệ, input sai, database lỗi và request bị hủy.
+1. Cấu hình connection string bằng User Secrets/biến môi trường, không commit mật khẩu.
+2. Áp dụng migration `InitialCreate` trên MySQL và gửi thử một message.
+3. Đặt origin production vào CORS và cấu hình reverse proxy `/api` khi deploy.
+4. Kiểm thử API tích hợp với MySQL, sau đó bổ sung CAPTCHA hoặc dịch vụ chống spam nếu website được public.
 
 ### Ưu tiên 2 — Hoàn chỉnh website public
 
@@ -163,8 +161,15 @@ npm test
 ```bash
 cd backend/src/PersonalPortfolio.Api
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "server=localhost;port=3306;database=personal_portfolio;user=YOUR_USER;password=YOUR_PASSWORD"
-cd ../../..
+cd ../..
 dotnet run --project src/PersonalPortfolio.Api
+```
+
+Sau khi MySQL đã chạy và connection string đúng, tạo bảng từ migration:
+
+```bash
+cd backend
+dotnet ef database update --project src/PersonalPortfolio.Api --startup-project src/PersonalPortfolio.Api
 ```
 
 ```bash
@@ -172,7 +177,7 @@ cd backend
 dotnet build PersonalPortfolio.sln --no-restore
 ```
 
-> Backend chạy được không có nghĩa Contact đã hoạt động: hiện chưa có migration hay Contact endpoint.
+> API Contact và migration đã có. Để gửi/lưu được message, bạn vẫn cần cấu hình MySQL và chạy `dotnet ef database update`.
 
 ## Quy ước bảo mật
 
@@ -187,7 +192,7 @@ dotnet build PersonalPortfolio.sln --no-restore
 | Mục tiêu | Mức sẵn sàng |
 | --- | --- |
 | Demo giao diện portfolio một trang | Có thể dùng sau khi điền nội dung/liên kết thật |
-| Form liên hệ thực tế | Chưa sẵn sàng |
+| Form liên hệ thực tế | Sẵn sàng sau khi cấu hình MySQL, áp dụng migration và đặt đúng URL/origin production |
 | Portfolio dùng dữ liệu động | Chưa sẵn sàng |
 | Khu vực Admin | Chưa triển khai |
 | Production deployment | Chưa sẵn sàng; cần hoàn tất bảo mật, test, migration và cấu hình môi trường |

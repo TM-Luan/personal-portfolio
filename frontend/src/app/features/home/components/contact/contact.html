@@ -1,4 +1,4 @@
-<section class="contact section-enter">
+<section id="contact" class="contact section-enter">
   <div class="contact__container">
     <div class="contact__info">
       <p class="contact__eyebrow">
@@ -57,6 +57,8 @@
     <form
       class="contact__form"
       [formGroup]="contactForm"
+      (ngSubmit)="submit()"
+      novalidate
     >
       <div class="contact__field">
         <label
@@ -167,14 +169,26 @@
 
       <button
         class="contact__submit"
-        type="button"
-        disabled
+        type="submit"
+        [disabled]="isSubmitting()"
       >
-        Send Message
+        {{ isSubmitting() ? 'Đang gửi...' : 'Gửi tin nhắn' }}
       </button>
 
+      @if (submitSuccess()) {
+        <p class="contact__feedback contact__feedback--success" role="status">
+          {{ submitSuccess() }}
+        </p>
+      }
+
+      @if (submitError()) {
+        <p class="contact__feedback contact__feedback--error" role="alert">
+          {{ submitError() }}
+        </p>
+      }
+
       <p class="contact__note">
-        Chức năng gửi tin nhắn sẽ được kết nối sau khi Contact API hoàn thành.
+        Thông tin của bạn chỉ được dùng để phản hồi liên hệ.
       </p>
     </form>
   </div>

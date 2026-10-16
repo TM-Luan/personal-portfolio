@@ -1,0 +1,14 @@
+# Build output
+**/bin/
+**/obj/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Secrets and local IDE settings
+appsettings.Local.json
+appsettings.*.local.json
+.env
+.env.*
+.vs/
+.idea/

@@ -184,6 +184,21 @@ a.contact__social-link:hover {
   line-height: 1.6;
 }
 
+.contact__feedback {
+  margin: 12px 0 0;
+
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.contact__feedback--success {
+  color: #15803d;
+}
+
+.contact__feedback--error {
+  color: #dc2626;
+}
+
 @media (max-width: 800px) {
   .contact__container {
     grid-template-columns: 1fr;

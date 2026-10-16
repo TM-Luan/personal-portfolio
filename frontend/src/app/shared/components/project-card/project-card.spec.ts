@@ -11,6 +11,10 @@ describe('ProjectCard', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectCard);
+    fixture.componentRef.setInput('title', 'Test project');
+    fixture.componentRef.setInput('description', 'A test project description.');
+    fixture.componentRef.setInput('technologies', ['Angular']);
+    fixture.detectChanges();
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

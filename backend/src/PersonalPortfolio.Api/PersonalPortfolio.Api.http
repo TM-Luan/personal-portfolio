@@ -1,6 +1,10 @@
 @PersonalPortfolio.Api_HostAddress = http://localhost:5243
 
-GET {{PersonalPortfolio.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{PersonalPortfolio.Api_HostAddress}}/api/contact-messages
+Content-Type: application/json
 
-###
+{
+  "name": "Nguyen Van A",
+  "email": "nguyen.van.a@example.com",
+  "message": "Tôi muốn trao đổi về cơ hội hợp tác cùng bạn."
+}

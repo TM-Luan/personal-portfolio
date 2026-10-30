@@ -13,3 +13,4 @@ public sealed class CreateContactMessageRequest
     [Required, StringLength(5000, MinimumLength = 10), RegularExpression(@".*\S.*")]
     public string Message { get; init; } = string.Empty;
 }
+

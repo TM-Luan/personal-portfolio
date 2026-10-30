@@ -33,3 +33,4 @@ public sealed class ContactService(IContactRepository contactRepository) : ICont
             message.CreatedAt);
     }
 }
+

@@ -1,6 +1,6 @@
 # Bàn giao dự án cho AI tiếp theo
 
-> Mục đích: đọc tài liệu này trước khi sửa mã. Đây là portfolio cá nhân full-stack đang ở giai đoạn hoàn thiện website public và đưa form Contact vào môi trường thật. Không tự suy diễn rằng Admin, Blog, hay dữ liệu động đã tồn tại.
+> Mục đích: đọc tài liệu này trước khi sửa mã. Đây là portfolio cá nhân full-stack dùng Angular, ASP.NET Core, EF Core và MySQL, đang ở giai đoạn hoàn thiện website public và đưa form Contact vào môi trường thật. Không tự suy diễn rằng Admin, Blog, hay dữ liệu động đã tồn tại.
 
 ## 1. Phạm vi và trạng thái hiện tại
 
@@ -56,12 +56,16 @@ personal-portfolio/
         ├── Controllers/              # HTTP controllers
         │   └── ContactMessagesController.cs
         ├── Data/                     # DbContext và factory cho EF CLI
-        ├── Contact/                  # Vertical slice Contact trên đĩa
-        │   ├── Entities/             # Entity + enum
-        │   ├── Contracts/            # Request/response DTO
-        │   ├── Repositories/         # Abstraction và EF implementation
-        │   ├── Services/             # Business/use-case layer
-        │   └── ContactMessageConfiguration.cs # EF mapping
+        ├── Features/                 # Vertical slices theo domain
+        │   ├── Contact/
+        │   │   ├── Entities/          # Entity + enum
+        │   │   ├── Contracts/         # Request/response DTO
+        │   │   ├── Repositories/      # Abstraction và EF implementation
+        │   │   ├── Services/          # Business/use-case layer
+        │   │   └── ContactMessageConfiguration.cs # EF mapping
+        │   ├── Projects/
+        │   ├── Content/
+        │   └── Admin/
         ├── Migrations/               # EF Core migration + model snapshot
         └── Properties/launchSettings.json
 ```
@@ -80,8 +84,8 @@ personal-portfolio/
 ### Backend
 
 - Target `.NET 10`, nullable và implicit usings bật. Giữ class/entity PascalCase; async method có hậu tố `Async`; dùng `CancellationToken` xuyên controller → service → repository.
-- Theo vertical slice: khi thêm nghiệp vụ `X`, đặt entity/contract/repository/service/configuration trong `Contact/` tương ứng hoặc thư mục feature mới cùng cấp. Controller vẫn đặt ở `Controllers/`.
-- **Lệch tên đang tồn tại, không tự refactor chỉ vì thẩm mỹ:** đường dẫn vật lý là `Contact/`, nhưng namespace của các lớp là `PersonalPortfolio.Api.Features.Contact...`. Cả hai đang build cùng nhau. Nếu quyết định chuẩn hóa về `Features/Contact`, phải thực hiện có chủ đích, cập nhật toàn bộ namespace và kiểm tra migration/build; không làm lẫn trong một thay đổi tính năng nhỏ.
+- Theo vertical slice: khi thêm nghiệp vụ `X`, đặt entity/contract/repository/service/configuration trong `Features/<FeatureName>/`. Controller vẫn đặt ở `Controllers/`.
+- Contact đã được chuẩn hóa từ thư mục vật lý `Contact/` sang `Features/Contact/`; namespace hiện tại `PersonalPortfolio.Api.Features.Contact...` khớp với đường dẫn.
 - Entity database không được trả trực tiếp qua API. Tạo Contracts request/response riêng và map trong service.
 - Mapping EF dùng `IEntityTypeConfiguration<T>` và được quét bởi `ApplyConfigurationsFromAssembly`. Cột DB dùng `snake_case`, bảng `contact_messages`.
 - Mọi thay đổi schema phải tạo EF migration mới; không sửa migration `20261015122745_InitialCreate` đã tồn tại khi database có thể đã được áp dụng. Cập nhật `ApplicationDbContextModelSnapshot.cs` bằng lệnh EF.
@@ -137,10 +141,115 @@ Backend local lắng nghe `http://localhost:5243` (và profile HTTPS là `https:
 - Không commit password, connection string thật, token hoặc `.env`; `.gitignore` đã bỏ qua local settings/build output/node_modules.
 - Không bỏ `UseHttpsRedirection`, validation API, CORS policy, rate limit Contact hoặc EF migration chỉ để “chạy được”. Nếu cần đổi, giải thích lý do và kiểm tra tác động.
 - `UseAuthorization()` đang có nhưng **chưa hề có authentication scheme hay endpoint yêu cầu quyền**. Không nói Admin/API đã được bảo vệ khi chưa thêm auth hoàn chỉnh.
-- Chưa có Swagger/OpenAPI. Đừng hướng dẫn người dùng vào URL tài liệu API cho đến khi nó được triển khai.
+- Swagger/OpenAPI đã được đăng ký trong `Program.cs` và chỉ bật ở Development; URL mặc định là `/swagger` khi backend chạy ở môi trường Development.
 - Không biến toàn bộ dữ liệu tĩnh thành database/API nếu chủ sở hữu chưa chọn mô hình quản trị dữ liệu; trước hết làm đúng yêu cầu tính năng đang được giao.
 
-## 8. Checklist trước khi bàn giao thay đổi mới
+## 8. Quy trình bắt buộc khi AI thực hiện feature mới
+
+AI phải làm theo thứ tự sau, không bỏ qua bước tìm code tương tự:
+
+1. Xác định feature thuộc `Projects`, `Contact`, `Content`, `Admin` hay feature mới.
+2. Kiểm tra implementation, route, entity, migration và API liên quan đang có.
+3. Xác định API contract, request DTO, response DTO và business rule.
+4. Cập nhật entity/configuration nếu cần; nếu đổi schema thì tạo migration mới.
+5. Cập nhật repository, service và controller theo luồng Controller → Service → Repository → DbContext → MySQL.
+6. Tạo hoặc cập nhật frontend API service, route và component.
+7. Bảo đảm màn hình có đủ loading, error, empty và success state.
+8. Kiểm tra validation, authentication/authorization, CORS và rate limit nếu có liên quan.
+9. Viết hoặc cập nhật test.
+10. Chạy build/test, kiểm tra diff và cập nhật tài liệu nếu API/schema/cách chạy thay đổi.
+
+Luồng chuẩn:
+
+```text
+User → Angular component → API service → Controller
+     → Feature Service → Repository → ApplicationDbContext → MySQL
+     → DTO response → Frontend state → UI
+```
+
+## 9. Quy tắc mở rộng cấu trúc
+
+Khi tạo feature backend mới, ưu tiên cấu trúc:
+
+```text
+Features/<FeatureName>/
+├── Contracts/       # request/response DTO
+├── Entities/        # EF Core entity
+├── Repositories/    # interface và implementation
+└── Services/        # business/use-case
+```
+
+Các feature mới phải đặt dưới `Features/<FeatureName>/`. Không tạo thêm module nghiệp vụ ở root backend nếu module đó thuộc một domain cụ thể.
+
+Khi tạo feature frontend mới, ưu tiên:
+
+```text
+features/<feature>/
+├── pages/
+├── components/
+├── data-access/
+└── models/
+```
+
+API URL chỉ được đặt trong API service. Component chỉ điều phối UI và state; không truy cập `HttpClient` trực tiếp.
+
+## 10. Quy tắc MySQL/EF Core
+
+- Entity phải có khóa chính và kiểu dữ liệu rõ ràng.
+- Mapping database dùng `IEntityTypeConfiguration<T>` và được quét bằng `ApplyConfigurationsFromAssembly`.
+- Tên bảng/cột mới dùng `snake_case`, nhất quán với bảng `contact_messages` hiện có.
+- Dùng UTC cho thời gian.
+- Dùng `AsNoTracking()` cho truy vấn chỉ đọc.
+- Tránh N+1 query; dùng projection hoặc `Include` có chủ đích.
+- Không trả `IQueryable` ra khỏi repository.
+- Mọi thay đổi entity/schema phải có EF migration mới.
+- Không sửa migration đã chạy hoặc model snapshot bằng tay.
+- Kiểm tra index, foreign key, nullable và default value trước khi tạo migration.
+- Không chạy migration/test trên database production khi chưa được yêu cầu rõ ràng.
+- Test database phải tách khỏi database thật.
+
+## 11. Quy tắc API và frontend state
+
+API mới dùng route nhất quán, ví dụ:
+
+```text
+GET    /api/projects
+GET    /api/projects/{slug}
+POST   /api/projects
+PUT    /api/projects/{id}
+DELETE /api/projects/{id}
+```
+
+- Dùng danh từ số nhiều cho resource.
+- Dùng status code phù hợp: `201`, `400`, `401`, `403`, `404`, `429`, `500`.
+- Lỗi API dùng `ProblemDetails`; không trả stack trace hoặc secret.
+- DTO phải tách khỏi EF entity.
+- Frontend phải xử lý loading, error, empty và success.
+- Validation phải có ở cả frontend và backend.
+- Route Admin phải có guard ở frontend và authorization ở backend; không chỉ ẩn menu để bảo vệ dữ liệu.
+
+## 12. Quy tắc quản lý code
+
+Branch dùng theo phạm vi thay đổi:
+
+```text
+feature/admin-projects
+feature/blog-api
+fix/contact-validation
+refactor/project-repository
+migration/add-project-metadata
+test/contact-service
+chore/setup-ci
+```
+
+- Mỗi commit chỉ tập trung một mục tiêu.
+- Không trộn refactor lớn với feature không liên quan.
+- Không commit `bin/`, `obj/`, `node_modules/`, file build hoặc secret.
+- Kiểm tra diff trước khi commit.
+- Review phải kiểm tra API contract, quyền, migration, test và secret.
+- Cập nhật README/tài liệu khi thay đổi API, schema hoặc cách chạy.
+
+## 13. Checklist trước khi bàn giao thay đổi mới
 
 - [ ] Đặt file đúng feature/layer và tuân thủ naming ở trên.
 - [ ] Nếu có API: DTO, validation server, status code, cancellation token, DI và CORS/auth tác động phù hợp.

@@ -6,3 +6,4 @@ public enum ContactMessageStatus
     Read,
     Archived
 }
+

@@ -7,3 +7,4 @@ public sealed record ContactMessageResponse(
     string Message,
     string Status,
     DateTime CreatedAt);
+

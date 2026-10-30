@@ -11,3 +11,4 @@ public interface IContactRepository
     Task<int> SaveChangesAsync(
         CancellationToken cancellationToken = default);
 }
+

@@ -8,3 +8,4 @@ public interface IContactService
         CreateContactMessageRequest request,
         CancellationToken cancellationToken = default);
 }
+

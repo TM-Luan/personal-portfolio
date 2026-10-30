@@ -58,3 +58,4 @@ public class ContactMessageConfiguration
                 "ix_contact_messages_status_created_at");
     }
 }
+

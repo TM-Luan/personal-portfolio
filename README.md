@@ -39,7 +39,7 @@ personal-portfolio/
     └── src/PersonalPortfolio.Api/
         ├── Program.cs                     # DI và HTTP pipeline
         ├── Data/ApplicationDbContext.cs   # EF Core DbContext
-        └── Contact/
+        └── Features/Contact/
             ├── Entities/                  # ContactMessage và trạng thái
             ├── Repositories/              # Interface/repository EF Core
             └── ContactMessageConfiguration.cs # EF Core mapping
@@ -142,39 +142,52 @@ Nên dùng DTO riêng cho request/response, không trả trực tiếp entity da
 
 ### Frontend
 
-```bash
+Mở terminal thứ nhất và chạy:
+
+```powershell
 cd frontend
-npm install
-npm start
+npm.cmd ci
+npm.cmd start
 ```
 
-```bash
+Frontend chạy tại `http://localhost:4200/` và proxy `/api` tới backend `http://localhost:5243`.
+
+Kiểm tra frontend:
+
+```powershell
 cd frontend
-npm run build
-npm test
+npm.cmd run build
+npm.cmd test
 ```
 
 ### Backend
 
-Đặt `ConnectionStrings:DefaultConnection` bằng User Secrets hoặc biến môi trường trước khi chạy. Ví dụ local (thay giá trị mẫu):
+Mở terminal thứ hai. MySQL phải đang chạy trước, sau đó đặt `ConnectionStrings:DefaultConnection` bằng User Secrets (thay giá trị mẫu):
 
-```bash
-cd backend/src/PersonalPortfolio.Api
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "server=localhost;port=3306;database=personal_portfolio;user=YOUR_USER;password=YOUR_PASSWORD"
-cd ../..
-dotnet run --project src/PersonalPortfolio.Api
+```powershell
+dotnet user-secrets set --project backend/src/PersonalPortfolio.Api "ConnectionStrings:DefaultConnection" "server=localhost;port=3306;database=personal_portfolio;user=YOUR_USER;password=YOUR_PASSWORD"
 ```
 
-Sau khi MySQL đã chạy và connection string đúng, tạo bảng từ migration:
+Áp dụng migration một lần hoặc sau khi có migration mới:
 
-```bash
+```powershell
 cd backend
 dotnet ef database update --project src/PersonalPortfolio.Api --startup-project src/PersonalPortfolio.Api
 ```
 
-```bash
-cd backend
-dotnet build PersonalPortfolio.sln --no-restore
+Chạy API bằng profile HTTP (đúng với frontend proxy):
+
+```powershell
+cd ..
+dotnet run --project backend/src/PersonalPortfolio.Api --launch-profile http
+```
+
+API chạy tại `http://localhost:5243`; Swagger tại `http://localhost:5243/swagger`.
+
+Kiểm tra backend:
+
+```powershell
+dotnet build backend/PersonalPortfolio.sln --no-restore
 ```
 
 > API Contact và migration đã có. Để gửi/lưu được message, bạn vẫn cần cấu hình MySQL và chạy `dotnet ef database update`.
